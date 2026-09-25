@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  // SQLite by default for a cost-effective/self-contained setup.
+  // Swap to "postgresql" + a hosted Postgres URL (e.g. Neon/Supabase free tier) for production,
+  // then you can switch the fields below back to real `enum`s if you like.
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Plan: "FREE" | "PREMIUM"
+// SubscriptionProvider: "RAZORPAY" | "PAYPAL"
+// SubscriptionStatus: "ACTIVE" | "CANCELLED" | "PAST_DUE" | "EXPIRED"
+
+model User {
+  id            String    @id @default(cuid())
+  username      String    @unique
+  email         String    @unique
+  password      String
+  displayName   String?
+  bio           String?
+  avatarUrl     String?
+  plan          String    @default("FREE")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  links         Link[]
+  theme         Theme?
+  subscriptions Subscription[]
+}
+
+model Link {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  url       String
+  emoji     String?
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  clicks    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Theme {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  backgroundColor String   @default("#f8fafc")
+  buttonColor     String   @default("#4f46e5")
+  buttonTextColor String   @default("#ffffff")
+  textColor       String   @default("#0f172a")
+  fontFamily      String   @default("Inter, sans-serif")
+  buttonStyle     String   @default("rounded") // rounded | square | pill
+  backgroundImage String? // premium only
+  updatedAt       DateTime @updatedAt
+}
+
+model Subscription {
+  id               String    @id @default(cuid())
+  userId           String
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider         String
+  providerSubId    String?   @unique
+  status           String    @default("ACTIVE")
+  currentPeriodEnd DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
