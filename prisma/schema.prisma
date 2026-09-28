@@ -3,10 +3,10 @@ generator client {
 }
 
 datasource db {
-  // SQLite by default for a cost-effective/self-contained setup.
-  // Swap to "postgresql" + a hosted Postgres URL (e.g. Neon/Supabase free tier) for production,
-  // then you can switch the fields below back to real `enum`s if you like.
-  provider = "sqlite"
+  // Postgres, for compatibility with serverless hosts like Vercel (no writable
+  // filesystem for SQLite there). Point DATABASE_URL at a free instance
+  // (Neon, Supabase) for production, or any local/self-hosted Postgres for dev.
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
