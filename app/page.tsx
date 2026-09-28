@@ -43,13 +43,14 @@ export default function HomePage() {
   return (
     <main className="bg-white">
       {/* Hero */}
-      <div className="relative overflow-hidden bg-slate-950">
-        <div className="pointer-events-none absolute left-1/2 top-[-10rem] h-[36rem] w-[36rem] -translate-x-1/2 rounded-full bg-brand-600/30 blur-[120px]" />
-        <div className="pointer-events-none absolute bottom-[-8rem] right-[-6rem] h-[24rem] w-[24rem] rounded-full bg-fuchsia-600/20 blur-[100px]" />
+      <div className="relative overflow-hidden bg-brand-950">
+        <div className="pointer-events-none absolute left-1/2 top-[-10rem] h-[36rem] w-[36rem] -translate-x-1/2 rounded-full bg-brand-500/40 blur-[120px]" />
+        <div className="pointer-events-none absolute bottom-[-8rem] right-[-6rem] h-[24rem] w-[24rem] rounded-full bg-lime-400/20 blur-[100px]" />
 
         <nav className="relative z-10 mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
           <span className="flex items-center gap-2 text-lg font-bold text-white">
-            <span className="text-2xl">🦆</span> QuackLink
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-lime-400 text-lg">🦆</span>
+            QuackLink
           </span>
           <div className="flex items-center gap-2 sm:gap-3">
             <Link
@@ -69,11 +70,11 @@ export default function HomePage() {
 
         <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-12 px-6 pb-20 pt-10 sm:pb-28 sm:pt-16 lg:grid-cols-2">
           <div className="text-center lg:text-left">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-brand-100 ring-1 ring-white/20">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-lime-400/15 px-3 py-1 text-xs font-medium text-lime-400 ring-1 ring-lime-400/30">
               🦆 Your digital pond, made simple
             </span>
             <h1 className="mt-5 text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl">
-              One link for <span className="text-brand-400">everything</span> you create.
+              One link for <span className="text-lime-400">everything</span> you create.
             </h1>
             <p className="mx-auto mt-4 max-w-md text-lg text-slate-300 lg:mx-0">
               Centralize every platform, product, and post into one beautiful page — built in
@@ -82,7 +83,7 @@ export default function HomePage() {
             <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
               <Link
                 href="/register"
-                className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-brand-600/30 transition hover:bg-brand-700 sm:w-auto"
+                className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-lime-400 px-6 py-3.5 text-base font-semibold text-brand-950 shadow-lg shadow-lime-400/20 transition hover:bg-lime-300 sm:w-auto"
               >
                 Create your QuackLink — it's free
                 <ArrowRight size={18} className="transition group-hover:translate-x-0.5" />
@@ -115,7 +116,7 @@ export default function HomePage() {
           <div className="mt-14 grid gap-8 sm:grid-cols-3">
             {FEATURES.map(({ icon: Icon, title, description }) => (
               <div key={title} className="text-center">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-600/10 text-brand-600">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-950 text-lime-400">
                   <Icon size={26} />
                 </div>
                 <h3 className="mt-5 font-semibold text-slate-900">{title}</h3>
@@ -135,7 +136,7 @@ export default function HomePage() {
           <div className="mt-12 grid gap-6 sm:grid-cols-3">
             {TESTIMONIALS.map((t) => (
               <div key={t.name} className="rounded-2xl border border-slate-200 p-6">
-                <div className="flex gap-0.5 text-amber-400">
+                <div className="flex gap-0.5 text-lime-600">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star key={i} size={16} fill="currentColor" strokeWidth={0} />
                   ))}
@@ -185,11 +186,11 @@ export default function HomePage() {
               </Link>
             </div>
 
-            <div className="relative rounded-2xl bg-slate-950 p-8 shadow-xl shadow-brand-900/20">
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-600 px-3 py-1 text-xs font-semibold text-white">
+            <div className="relative rounded-2xl bg-brand-950 p-8 shadow-xl shadow-brand-900/20">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-lime-400 px-3 py-1 text-xs font-semibold text-brand-950">
                 Most popular
               </span>
-              <h3 className="text-lg font-semibold text-brand-400">{PRICING.PREMIUM.name}</h3>
+              <h3 className="text-lg font-semibold text-lime-400">{PRICING.PREMIUM.name}</h3>
               <p className="mt-2 text-4xl font-bold text-white">
                 ₹{PRICING.PREMIUM.priceINR}
                 <span className="text-base font-normal text-slate-400">/mo</span>
@@ -198,13 +199,13 @@ export default function HomePage() {
               <ul className="mt-6 space-y-3 text-sm text-slate-300">
                 {PRICING.PREMIUM.features.map((f) => (
                   <li key={f} className="flex items-start gap-2">
-                    <Check size={18} className="mt-0.5 shrink-0 text-brand-400" /> {f}
+                    <Check size={18} className="mt-0.5 shrink-0 text-lime-400" /> {f}
                   </li>
                 ))}
               </ul>
               <Link
                 href="/register"
-                className="mt-8 block rounded-full bg-brand-600 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-brand-700"
+                className="mt-8 block rounded-full bg-lime-400 px-4 py-2.5 text-center text-sm font-semibold text-brand-950 hover:bg-lime-300"
               >
                 Upgrade to Premium
               </Link>
@@ -214,7 +215,7 @@ export default function HomePage() {
       </section>
 
       {/* Final CTA */}
-      <section className="bg-slate-950 py-16">
+      <section className="bg-brand-950 py-16">
         <div className="mx-auto max-w-3xl px-6 text-center">
           <h2 className="text-3xl font-bold text-white sm:text-4xl">Ready to make a splash?</h2>
           <p className="mt-3 text-slate-300">
@@ -222,7 +223,7 @@ export default function HomePage() {
           </p>
           <Link
             href="/register"
-            className="mt-7 inline-flex items-center gap-2 rounded-full bg-brand-600 px-7 py-3.5 text-base font-semibold text-white shadow-lg shadow-brand-600/30 hover:bg-brand-700"
+            className="mt-7 inline-flex items-center gap-2 rounded-full bg-lime-400 px-7 py-3.5 text-base font-semibold text-brand-950 shadow-lg shadow-lime-400/20 hover:bg-lime-300"
           >
             Get started for free
             <ArrowRight size={18} />
@@ -230,7 +231,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <footer className="bg-slate-950 py-8 text-center text-sm text-slate-500">
+      <footer className="bg-brand-950 py-8 text-center text-sm text-slate-500">
         © {new Date().getFullYear()} QuackLink
       </footer>
     </main>

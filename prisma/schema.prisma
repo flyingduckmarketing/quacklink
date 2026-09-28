@@ -49,10 +49,10 @@ model Theme {
   id              String   @id @default(cuid())
   userId          String   @unique
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  backgroundColor String   @default("#f8fafc")
-  buttonColor     String   @default("#4f46e5")
+  backgroundColor String   @default("#f4f7f0")
+  buttonColor     String   @default("#123524")
   buttonTextColor String   @default("#ffffff")
-  textColor       String   @default("#0f172a")
+  textColor       String   @default("#0d2a1c")
   fontFamily      String   @default("Inter, sans-serif")
   buttonStyle     String   @default("rounded") // rounded | square | pill
   backgroundImage String? // premium only

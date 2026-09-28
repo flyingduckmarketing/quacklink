@@ -13,10 +13,10 @@ type ThemeData = {
 };
 
 const DEFAULT_THEME: ThemeData = {
-  backgroundColor: "#f8fafc",
-  buttonColor: "#4f46e5",
+  backgroundColor: "#f4f7f0",
+  buttonColor: "#123524",
   buttonTextColor: "#ffffff",
-  textColor: "#0f172a",
+  textColor: "#0d2a1c",
   buttonStyle: "rounded",
   backgroundImage: null,
 };

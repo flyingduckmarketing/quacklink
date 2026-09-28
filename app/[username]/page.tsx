@@ -21,10 +21,10 @@ export default async function ProfilePage({
   const limits = limitsFor(user.plan);
   const theme = user.theme;
 
-  const backgroundColor = theme?.backgroundColor ?? "#f8fafc";
-  const buttonColor = theme?.buttonColor ?? "#4f46e5";
+  const backgroundColor = theme?.backgroundColor ?? "#f4f7f0";
+  const buttonColor = theme?.buttonColor ?? "#123524";
   const buttonTextColor = theme?.buttonTextColor ?? "#ffffff";
-  const textColor = theme?.textColor ?? "#0f172a";
+  const textColor = theme?.textColor ?? "#0d2a1c";
   const buttonStyle = theme?.buttonStyle ?? "rounded";
   const backgroundImage = limits.backgroundImage ? theme?.backgroundImage : null;
 

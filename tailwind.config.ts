@@ -5,15 +5,24 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Deep forest green — primary brand color (buttons, links, nav, dark sections)
         brand: {
-          50: "#eef2ff",
-          100: "#e0e7ff",
-          400: "#818cf8",
-          500: "#6366f1",
-          600: "#4f46e5",
-          700: "#4338ca",
-          900: "#312e81",
-          950: "#1e1b4b",
+          50: "#eef5f0",
+          100: "#d7e8db",
+          400: "#2f6b4a",
+          500: "#1f5439",
+          600: "#14432c",
+          700: "#103522",
+          800: "#0d2a1c",
+          900: "#0a2016",
+          950: "#071810",
+        },
+        // Chartreuse — accent color for highlights, badges, and pops of energy
+        lime: {
+          300: "#e2f98f",
+          400: "#d4f95a",
+          500: "#c6ea3e",
+          600: "#aed12a",
         },
       },
       keyframes: {
