@@ -11,6 +11,7 @@ datasource db {
 }
 
 // Plan: "FREE" | "PREMIUM"
+// Role: "USER" | "ADMIN"
 // SubscriptionProvider: "RAZORPAY" | "PAYPAL"
 // SubscriptionStatus: "ACTIVE" | "CANCELLED" | "PAST_DUE" | "EXPIRED"
 
@@ -23,6 +24,8 @@ model User {
   bio           String?
   avatarUrl     String?
   plan          String    @default("FREE")
+  role          String    @default("USER")
+  suspended     Boolean   @default(false)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -69,4 +72,20 @@ model Subscription {
   currentPeriodEnd DateTime?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
+}
+
+model Template {
+  id              String   @id @default(cuid())
+  name            String
+  backgroundColor String   @default("#f4f7f0")
+  buttonColor     String   @default("#123524")
+  buttonTextColor String   @default("#ffffff")
+  textColor       String   @default("#0d2a1c")
+  buttonStyle     String   @default("rounded") // rounded | square | pill
+  backgroundImage String?
+  premiumOnly     Boolean  @default(false)
+  active          Boolean  @default(true)
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }

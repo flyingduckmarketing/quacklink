@@ -12,6 +12,17 @@ type ThemeData = {
   backgroundImage: string | null;
 };
 
+type Template = {
+  id: string;
+  name: string;
+  backgroundColor: string;
+  buttonColor: string;
+  buttonTextColor: string;
+  textColor: string;
+  buttonStyle: "rounded" | "square" | "pill";
+  premiumOnly: boolean;
+};
+
 const DEFAULT_THEME: ThemeData = {
   backgroundColor: "#f4f7f0",
   buttonColor: "#123524",
@@ -27,6 +38,9 @@ export default function AppearancePage() {
 
   const [theme, setTheme] = useState<ThemeData>(DEFAULT_THEME);
   const [saving, setSaving] = useState(false);
+  const [templates, setTemplates] = useState<Template[]>([]);
+  const [applyingId, setApplyingId] = useState<string | null>(null);
+  const [templateError, setTemplateError] = useState("");
 
   useEffect(() => {
     fetch("/api/theme")
@@ -34,6 +48,9 @@ export default function AppearancePage() {
       .then((data) => {
         if (data) setTheme({ ...DEFAULT_THEME, ...data });
       });
+    fetch("/api/templates")
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data) => setTemplates(data));
   }, []);
 
   async function save() {
@@ -44,6 +61,24 @@ export default function AppearancePage() {
       body: JSON.stringify(theme),
     });
     setSaving(false);
+  }
+
+  async function applyTemplate(template: Template) {
+    setTemplateError("");
+    setApplyingId(template.id);
+    const res = await fetch("/api/theme/apply-template", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ templateId: template.id }),
+    });
+    setApplyingId(null);
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      setTemplateError(body.error ?? "Could not apply template");
+      return;
+    }
+    const updated = await res.json();
+    setTheme({ ...DEFAULT_THEME, ...updated });
   }
 
   const buttonRadius =
@@ -64,6 +99,39 @@ export default function AppearancePage() {
           </>
         )}
       </p>
+
+      {templates.length > 0 && (
+        <div className="mt-6">
+          <h2 className="text-sm font-semibold text-slate-900">Templates</h2>
+          <p className="text-xs text-slate-500">Apply a ready-made look with one click.</p>
+          {templateError && <p className="mt-2 text-sm text-red-600">{templateError}</p>}
+          <div className="mt-3 flex flex-wrap gap-3">
+            {templates.map((t) => {
+              const locked = t.premiumOnly && !isPremium;
+              return (
+                <button
+                  key={t.id}
+                  onClick={() => !locked && applyTemplate(t)}
+                  disabled={applyingId === t.id || locked}
+                  className={`w-32 rounded-xl border p-3 text-left transition ${
+                    locked ? "cursor-not-allowed border-slate-200 opacity-60" : "border-slate-200 hover:border-brand-400"
+                  }`}
+                  style={{ backgroundColor: t.backgroundColor }}
+                >
+                  <div
+                    className="h-5 rounded"
+                    style={{ backgroundColor: t.buttonColor }}
+                  />
+                  <p className="mt-2 truncate text-xs font-medium" style={{ color: t.textColor }}>
+                    {applyingId === t.id ? "Applying..." : t.name}
+                  </p>
+                  {locked && <p className="text-[10px] font-semibold text-amber-600">Premium</p>}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       <div className="mt-6 grid gap-8 sm:grid-cols-2">
         <div className={`space-y-4 ${!isPremium ? "pointer-events-none opacity-50" : ""}`}>

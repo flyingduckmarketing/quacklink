@@ -20,6 +20,7 @@ export const authOptions: NextAuthOptions = {
           where: { email: credentials.email.toLowerCase() },
         });
         if (!user) return null;
+        if (user.suspended) return null;
 
         const valid = await bcrypt.compare(credentials.password, user.password);
         if (!valid) return null;
@@ -30,6 +31,7 @@ export const authOptions: NextAuthOptions = {
           name: user.displayName ?? user.username,
           username: user.username,
           plan: user.plan,
+          role: user.role,
         } as any;
       },
     }),
@@ -40,10 +42,14 @@ export const authOptions: NextAuthOptions = {
         token.id = (user as any).id;
         token.username = (user as any).username;
         token.plan = (user as any).plan;
+        token.role = (user as any).role;
       }
       if (trigger === "update" && token.id) {
         const fresh = await prisma.user.findUnique({ where: { id: token.id as string } });
-        if (fresh) token.plan = fresh.plan;
+        if (fresh) {
+          token.plan = fresh.plan;
+          token.role = fresh.role;
+        }
       }
       return token;
     },
@@ -52,6 +58,7 @@ export const authOptions: NextAuthOptions = {
         (session.user as any).id = token.id;
         (session.user as any).username = token.username;
         (session.user as any).plan = token.plan;
+        (session.user as any).role = token.role;
       }
       return session;
     },

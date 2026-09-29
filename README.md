@@ -98,10 +98,38 @@ Visit `http://localhost:3000`.
 Until these env vars are set, the "Upgrade" buttons return a friendly
 "not configured yet" error instead of failing hard.
 
+## Admin panel
+
+There's a super-admin area at `/admin` for managing users, subscriptions, and
+theme templates. It's gated by a `role` field on `User` (`"USER"` or
+`"ADMIN"`) — nobody can reach it until you promote an account.
+
+**Promote your first admin** (run once, after `db:push`):
+
+```bash
+DATABASE_URL="<your connection string>" npm run make-admin -- you@example.com
+```
+
+That user can now open `/admin` and:
+
+- **Users** — search, change plan (Free/Premium), promote/demote admins,
+  suspend/unsuspend accounts (suspended users can't log in), delete accounts.
+- **Subscriptions** — read-only list of every Razorpay/PayPal subscription
+  record, filterable by provider and status.
+- **Templates** — create reusable theme presets (colors + button style).
+  Mark a template "Premium only" to restrict it; everyone else sees it on
+  their Appearance page and can apply it with one click.
+
+Admins manage other admins from the same Users table — there's no separate
+"super admin" tier; any `ADMIN` can promote or demote another user (except
+their own account, to avoid locking yourself out).
+
 ## Project structure
 
 - `app/[username]` — public link-in-bio page.
 - `app/dashboard` — authenticated area: links, appearance, billing.
+- `app/admin` — admin-only area: users, subscriptions, templates.
 - `app/api/links`, `app/api/theme` — CRUD gated by `lib/plans.ts`.
 - `app/api/billing/*` — Razorpay and PayPal checkout + webhooks.
-- `prisma/schema.prisma` — User, Link, Theme, Subscription models.
+- `app/api/admin/*` — admin-only CRUD, gated by `lib/admin.ts`.
+- `prisma/schema.prisma` — User, Link, Theme, Subscription, Template models.
