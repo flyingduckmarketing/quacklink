@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { limitsFor } from "@/lib/plans";
 import ProfileLinkButton from "@/components/ProfileLinkButton";
+import SocialIconLink from "@/components/SocialIconLink";
 
 export default async function ProfilePage({
   params,
@@ -30,6 +31,9 @@ export default async function ProfilePage({
 
   const buttonRadius = buttonStyle === "pill" ? "9999px" : buttonStyle === "square" ? "4px" : "12px";
 
+  const mainLinks = user.links.filter((l) => l.kind === "LINK");
+  const socialLinks = user.links.filter((l) => l.kind === "SOCIAL");
+
   return (
     <main
       className="min-h-screen"
@@ -56,8 +60,22 @@ export default async function ProfilePage({
           </p>
         )}
 
+        {socialLinks.length > 0 && (
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            {socialLinks.map((link) => (
+              <SocialIconLink
+                key={link.id}
+                id={link.id}
+                url={link.url}
+                platform={link.platform as any}
+                style={{ backgroundColor: buttonColor, color: buttonTextColor }}
+              />
+            ))}
+          </div>
+        )}
+
         <div className="mt-8 w-full space-y-3">
-          {user.links.map((link) => (
+          {mainLinks.map((link) => (
             <ProfileLinkButton
               key={link.id}
               id={link.id}

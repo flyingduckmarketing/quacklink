@@ -41,6 +41,8 @@ model Link {
   title     String
   url       String
   emoji     String?
+  kind      String   @default("LINK") // LINK | SOCIAL
+  platform  String? // instagram | twitter | youtube | tiktok | facebook | linkedin | github | email | website | other (SOCIAL only)
   order     Int      @default(0)
   active    Boolean  @default(true)
   clicks    Int      @default(0)

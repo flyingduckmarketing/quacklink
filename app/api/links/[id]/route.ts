@@ -4,10 +4,24 @@ import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+const PLATFORMS = [
+  "instagram",
+  "twitter",
+  "youtube",
+  "tiktok",
+  "facebook",
+  "linkedin",
+  "github",
+  "email",
+  "website",
+  "other",
+] as const;
+
 const updateSchema = z.object({
   title: z.string().min(1).max(100).optional(),
   url: z.string().url().optional(),
   emoji: z.string().max(8).nullable().optional(),
+  platform: z.enum(PLATFORMS).nullable().optional(),
   active: z.boolean().optional(),
   order: z.number().int().optional(),
 });

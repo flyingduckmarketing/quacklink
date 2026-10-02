@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import ProfilePreview, { type PreviewLink } from "@/components/ProfilePreview";
+import { limitsFor } from "@/lib/plans";
 
 type ThemeData = {
   backgroundColor: string;
@@ -34,9 +36,12 @@ const DEFAULT_THEME: ThemeData = {
 
 export default function AppearancePage() {
   const { data: session } = useSession();
-  const isPremium = (session?.user as any)?.plan === "PREMIUM";
+  const plan = (session?.user as any)?.plan ?? "FREE";
+  const isPremium = plan === "PREMIUM";
+  const username = (session?.user as any)?.username ?? "";
 
   const [theme, setTheme] = useState<ThemeData>(DEFAULT_THEME);
+  const [links, setLinks] = useState<PreviewLink[]>([]);
   const [saving, setSaving] = useState(false);
   const [templates, setTemplates] = useState<Template[]>([]);
   const [applyingId, setApplyingId] = useState<string | null>(null);
@@ -51,6 +56,9 @@ export default function AppearancePage() {
     fetch("/api/templates")
       .then((res) => (res.ok ? res.json() : []))
       .then((data) => setTemplates(data));
+    fetch("/api/links")
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data) => setLinks(data));
   }, []);
 
   async function save() {
@@ -80,9 +88,6 @@ export default function AppearancePage() {
     const updated = await res.json();
     setTheme({ ...DEFAULT_THEME, ...updated });
   }
-
-  const buttonRadius =
-    theme.buttonStyle === "pill" ? "9999px" : theme.buttonStyle === "square" ? "4px" : "12px";
 
   return (
     <div>
@@ -202,32 +207,16 @@ export default function AppearancePage() {
           </button>
         </div>
 
-        <div
-          className="rounded-2xl border border-slate-200 p-6"
-          style={{
-            backgroundColor: theme.backgroundColor,
-            backgroundImage: theme.backgroundImage ? `url(${theme.backgroundImage})` : undefined,
-            backgroundSize: "cover",
-          }}
-        >
-          <p className="text-center text-xs font-medium uppercase tracking-wide" style={{ color: theme.textColor }}>
-            Preview
+        <div>
+          <p className="mb-3 text-center text-xs font-medium uppercase tracking-wide text-slate-400">
+            Live preview
           </p>
-          <div className="mt-4 space-y-3">
-            {["My website", "Latest video", "Newsletter"].map((label) => (
-              <div
-                key={label}
-                className="py-3 text-center text-sm font-medium shadow-sm"
-                style={{
-                  backgroundColor: theme.buttonColor,
-                  color: theme.buttonTextColor,
-                  borderRadius: buttonRadius,
-                }}
-              >
-                {label}
-              </div>
-            ))}
-          </div>
+          <ProfilePreview
+            username={username}
+            theme={theme}
+            links={links}
+            showBranding={!limitsFor(plan).removeBranding}
+          />
         </div>
       </div>
     </div>
