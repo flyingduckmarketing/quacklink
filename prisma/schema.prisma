@@ -26,6 +26,8 @@ model User {
   plan          String    @default("FREE")
   role          String    @default("USER")
   suspended     Boolean   @default(false)
+  resetTokenHash String?
+  resetTokenExpiresAt DateTime?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 

@@ -98,6 +98,21 @@ Visit `http://localhost:3000`.
 Until these env vars are set, the "Upgrade" buttons return a friendly
 "not configured yet" error instead of failing hard.
 
+## Password reset emails
+
+"Forgot password?" on the login page sends a time-limited reset link via
+SMTP. Set these to enable real delivery:
+
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`
+
+A Gmail account works well for low volume: enable 2FA, then create an
+[App Password](https://myaccount.google.com/apppasswords) and use it as
+`SMTP_PASS` with `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=465`.
+
+Until SMTP is configured, the reset link is logged to the server console
+instead of emailed — useful for local testing, but set real credentials
+before relying on this in production.
+
 ## Admin panel
 
 There's a super-admin area at `/admin` for managing users, subscriptions, and
