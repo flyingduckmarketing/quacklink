@@ -37,18 +37,28 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user, trigger }) {
+    async jwt({ token, user }) {
       if (user) {
         token.id = (user as any).id;
         token.username = (user as any).username;
         token.plan = (user as any).plan;
         token.role = (user as any).role;
+        token.suspended = false;
+        return token;
       }
-      if (trigger === "update" && token.id) {
+
+      // Re-check the DB on every request that touches the session (not just
+      // on an explicit update() call), so a suspension or role change takes
+      // effect on the user's very next request instead of waiting out a
+      // 30-day JWT. See PROJECT.md §9 for the tradeoffs of this approach.
+      if (token.id) {
         const fresh = await prisma.user.findUnique({ where: { id: token.id as string } });
-        if (fresh) {
+        if (!fresh) {
+          token.suspended = true;
+        } else {
           token.plan = fresh.plan;
           token.role = fresh.role;
+          token.suspended = fresh.suspended;
         }
       }
       return token;
@@ -59,6 +69,7 @@ export const authOptions: NextAuthOptions = {
         (session.user as any).username = token.username;
         (session.user as any).plan = token.plan;
         (session.user as any).role = token.role;
+        (session.user as any).suspended = token.suspended;
       }
       return session;
     },

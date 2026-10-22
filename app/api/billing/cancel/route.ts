@@ -7,7 +7,9 @@ import { paypalFetch } from "@/lib/paypal";
 
 export async function POST() {
   const session = await getServerSession(authOptions);
-  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session?.user || (session.user as any).suspended) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const userId = (session.user as any).id;
   const sub = await prisma.subscription.findFirst({

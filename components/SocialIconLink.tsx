@@ -1,6 +1,7 @@
 "use client";
 
 import { PLATFORM_META, type Platform } from "@/lib/socialPlatforms";
+import { trackClick } from "@/lib/trackClick";
 
 export default function SocialIconLink({
   id,
@@ -17,7 +18,7 @@ export default function SocialIconLink({
   const Icon = meta.Icon;
 
   function handleClick() {
-    fetch(`/api/click/${id}`, { method: "POST" }).catch(() => {});
+    trackClick(id);
   }
 
   return (

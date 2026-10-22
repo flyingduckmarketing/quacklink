@@ -17,7 +17,9 @@ const themeSchema = z.object({
 
 export async function GET() {
   const session = await getServerSession(authOptions);
-  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session?.user || (session.user as any).suspended) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const theme = await prisma.theme.findUnique({ where: { userId: (session.user as any).id } });
   return NextResponse.json(theme);
@@ -25,7 +27,9 @@ export async function GET() {
 
 export async function PATCH(req: Request) {
   const session = await getServerSession(authOptions);
-  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session?.user || (session.user as any).suspended) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const userId = (session.user as any).id;
   const user = await prisma.user.findUnique({ where: { id: userId } });

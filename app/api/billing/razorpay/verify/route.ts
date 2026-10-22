@@ -8,7 +8,9 @@ import { prisma } from "@/lib/prisma";
 // can flip to Premium immediately. The webhook above remains the source of truth.
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
-  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session?.user || (session.user as any).suspended) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const { razorpay_payment_id, razorpay_subscription_id, razorpay_signature } = await req.json();
   const secret = process.env.RAZORPAY_KEY_SECRET;

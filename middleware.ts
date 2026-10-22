@@ -11,7 +11,7 @@ export default withAuth(
   {
     pages: { signIn: "/login" },
     callbacks: {
-      authorized: ({ token }) => !!token,
+      authorized: ({ token }) => !!token && !token.suspended,
     },
   }
 );

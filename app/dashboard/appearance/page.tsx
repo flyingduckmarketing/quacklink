@@ -96,11 +96,11 @@ export default function AppearancePage() {
         Customize how your public page looks.{" "}
         {!isPremium && (
           <>
-            Free plan uses the default theme —{" "}
+            Free plan can apply any non-Premium template below —{" "}
             <a href="/dashboard/billing" className="font-medium text-brand-600 underline">
               upgrade to Premium
             </a>{" "}
-            to unlock colors, fonts, and backgrounds.
+            to hand-pick your own colors, fonts, and background images.
           </>
         )}
       </p>

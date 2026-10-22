@@ -1,5 +1,7 @@
 "use client";
 
+import { trackClick } from "@/lib/trackClick";
+
 export default function ProfileLinkButton({
   id,
   title,
@@ -14,7 +16,7 @@ export default function ProfileLinkButton({
   style: React.CSSProperties;
 }) {
   function handleClick() {
-    fetch(`/api/click/${id}`, { method: "POST" }).catch(() => {});
+    trackClick(id);
   }
 
   return (

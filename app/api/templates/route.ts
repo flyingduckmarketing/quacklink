@@ -5,7 +5,9 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
-  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session?.user || (session.user as any).suspended) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const templates = await prisma.template.findMany({
     where: { active: true },

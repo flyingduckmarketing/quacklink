@@ -169,7 +169,9 @@ export default function LinksPage() {
     const newIndex = mainLinks.findIndex((l) => l.id === over.id);
     const reordered = arrayMove(mainLinks, oldIndex, newIndex);
     setLinks([...reordered, ...socialLinks]);
-    persistOrder(reordered.map((l) => l.id));
+    // Reload only after the reorder write lands, so a toggle/add/delete
+    // fired in between can't race ahead and overwrite this with stale order.
+    persistOrder(reordered.map((l) => l.id)).then(load);
   }
 
   function handleSocialDragEnd(event: DragEndEvent) {
@@ -179,7 +181,7 @@ export default function LinksPage() {
     const newIndex = socialLinks.findIndex((l) => l.id === over.id);
     const reordered = arrayMove(socialLinks, oldIndex, newIndex);
     setLinks([...mainLinks, ...reordered]);
-    persistOrder(reordered.map((l) => l.id));
+    persistOrder(reordered.map((l) => l.id)).then(load);
   }
 
   const limitReached = plan === "FREE" && mainLinks.length >= 5;

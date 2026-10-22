@@ -19,7 +19,13 @@ export async function POST(req: Request) {
   const user = await prisma.user.findUnique({ where: { email } });
 
   // Always respond the same way whether or not the account exists, so this
-  // endpoint can't be used to enumerate registered emails.
+  // endpoint can't be used to enumerate registered emails. We also pad the
+  // "no such user" path (below) to roughly match the real path's latency —
+  // without it, the real path's SMTP round-trip would make its response
+  // measurably slower, leaking account existence via timing even though the
+  // response body is identical either way. (The send is awaited rather than
+  // fire-and-forget because a serverless function can freeze immediately
+  // after the response is sent, which would silently drop an unawaited send.)
   if (user && !user.suspended) {
     const rawToken = crypto.randomBytes(32).toString("hex");
     const tokenHash = crypto.createHash("sha256").update(rawToken).digest("hex");
@@ -40,6 +46,8 @@ export async function POST(req: Request) {
     } catch (err) {
       console.error("Failed to send password reset email:", err);
     }
+  } else {
+    await new Promise((resolve) => setTimeout(resolve, 400));
   }
 
   return NextResponse.json({
