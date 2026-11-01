@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { Zap, Palette, BarChart3, Star, Check, ArrowRight } from "lucide-react";
 import { PRICING } from "@/lib/plans";
+import { getSettings } from "@/lib/settings";
 import PhoneMockup from "@/components/PhoneMockup";
+
+export const dynamic = "force-dynamic";
 
 const FEATURES = [
   {
@@ -39,9 +42,16 @@ const TESTIMONIALS = [
   },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const settings = await getSettings();
+
   return (
     <main className="bg-white">
+      {settings.maintenanceMode && (
+        <div className="bg-amber-400 px-6 py-2 text-center text-sm font-medium text-amber-950">
+          QuackLink is currently undergoing maintenance. Some features may be unavailable.
+        </div>
+      )}
       {/* Hero */}
       <div className="relative overflow-hidden bg-brand-950">
         <div className="pointer-events-none absolute left-1/2 top-[-10rem] h-[36rem] w-[36rem] -translate-x-1/2 rounded-full bg-brand-500/40 blur-[120px]" />
@@ -172,7 +182,10 @@ export default function HomePage() {
                 ₹0<span className="text-base font-normal text-slate-500">/mo</span>
               </p>
               <ul className="mt-6 space-y-3 text-sm text-slate-600">
-                {PRICING.FREE.features.map((f) => (
+                {[
+                  `Up to ${settings.freePlanLinkLimit} links`,
+                  ...PRICING.FREE.features.slice(1),
+                ].map((f) => (
                   <li key={f} className="flex items-start gap-2">
                     <Check size={18} className="mt-0.5 shrink-0 text-brand-600" /> {f}
                   </li>
@@ -192,10 +205,10 @@ export default function HomePage() {
               </span>
               <h3 className="text-lg font-semibold text-lime-400">{PRICING.PREMIUM.name}</h3>
               <p className="mt-2 text-4xl font-bold text-white">
-                ₹{PRICING.PREMIUM.priceINR}
+                ₹{settings.premiumPriceINR}
                 <span className="text-base font-normal text-slate-400">/mo</span>
               </p>
-              <p className="text-xs text-slate-400">or ${PRICING.PREMIUM.priceUSD}/mo via PayPal</p>
+              <p className="text-xs text-slate-400">or ${settings.premiumPriceUSD}/mo via PayPal</p>
               <ul className="mt-6 space-y-3 text-sm text-slate-300">
                 {PRICING.PREMIUM.features.map((f) => (
                   <li key={f} className="flex items-start gap-2">

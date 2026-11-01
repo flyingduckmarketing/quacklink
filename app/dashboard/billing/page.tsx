@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Script from "next/script";
 import { useSession } from "next-auth/react";
 import { PRICING } from "@/lib/plans";
@@ -16,6 +16,20 @@ export default function BillingPage() {
   const plan = (session?.user as any)?.plan ?? "FREE";
   const [loading, setLoading] = useState<"razorpay" | "paypal" | "cancel" | null>(null);
   const [message, setMessage] = useState("");
+  const [prices, setPrices] = useState({
+    priceINR: PRICING.PREMIUM.priceINR,
+    priceUSD: PRICING.PREMIUM.priceUSD,
+  });
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data) {
+          setPrices({ priceINR: data.premiumPriceINR, priceUSD: data.premiumPriceUSD });
+        }
+      });
+  }, []);
 
   async function startRazorpay() {
     setLoading("razorpay");
@@ -111,14 +125,14 @@ export default function BillingPage() {
               disabled={loading !== null}
               className="rounded-full bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50"
             >
-              {loading === "razorpay" ? "Starting..." : `Pay ₹${PRICING.PREMIUM.priceINR}/mo with Razorpay`}
+              {loading === "razorpay" ? "Starting..." : `Pay ₹${prices.priceINR}/mo with Razorpay`}
             </button>
             <button
               onClick={startPayPal}
               disabled={loading !== null}
               className="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium hover:bg-slate-50 disabled:opacity-50"
             >
-              {loading === "paypal" ? "Starting..." : `Pay $${PRICING.PREMIUM.priceUSD}/mo with PayPal`}
+              {loading === "paypal" ? "Starting..." : `Pay $${prices.priceUSD}/mo with PayPal`}
             </button>
           </div>
         </div>

@@ -60,6 +60,7 @@ export default function LinksPage() {
   const [editUrl, setEditUrl] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [freeLinkLimit, setFreeLinkLimit] = useState(5);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
@@ -78,6 +79,9 @@ export default function LinksPage() {
 
   useEffect(() => {
     load();
+    fetch("/api/settings")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => data && setFreeLinkLimit(data.freePlanLinkLimit));
   }, []);
 
   const mainLinks = links.filter((l) => l.kind === "LINK");
@@ -184,7 +188,7 @@ export default function LinksPage() {
     persistOrder(reordered.map((l) => l.id)).then(load);
   }
 
-  const limitReached = plan === "FREE" && mainLinks.length >= 5;
+  const limitReached = plan === "FREE" && mainLinks.length >= freeLinkLimit;
   const previewLinks: PreviewLink[] = links;
   const showBranding = !limitsFor(plan).removeBranding;
 
@@ -194,7 +198,7 @@ export default function LinksPage() {
         <h1 className="text-2xl font-bold">Your links</h1>
         <p className="mt-1 text-sm text-slate-500">
           {plan === "FREE"
-            ? `${mainLinks.length}/5 links used on the Free plan.`
+            ? `${mainLinks.length}/${freeLinkLimit} links used on the Free plan.`
             : "Unlimited links on Premium."}
         </p>
 
@@ -304,7 +308,7 @@ export default function LinksPage() {
           </form>
           {limitReached && (
             <p className="mt-2 text-sm text-amber-600">
-              You've reached the Free plan limit of 5 links.{" "}
+              You've reached the Free plan limit of {freeLinkLimit} links.{" "}
               <a href="/dashboard/billing" className="font-medium underline">
                 Upgrade to Premium
               </a>{" "}
