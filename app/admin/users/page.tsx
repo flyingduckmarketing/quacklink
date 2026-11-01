@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 type AdminUser = {
   id: string;
@@ -155,10 +156,16 @@ export default function AdminUsersPage() {
                 <td className="py-3 pr-4 text-xs text-slate-500">
                   {new Date(u.createdAt).toLocaleDateString()}
                 </td>
-                <td className="py-3 pr-4">
+                <td className="py-3 pr-4 whitespace-nowrap">
+                  <Link
+                    href={`/admin/users/${u.id}`}
+                    className="text-xs font-medium text-brand-600 hover:underline"
+                  >
+                    Manage
+                  </Link>
                   <button
                     onClick={() => deleteUser(u.id, u.username)}
-                    className="text-xs font-medium text-red-600 hover:underline"
+                    className="ml-3 text-xs font-medium text-red-600 hover:underline"
                   >
                     Delete
                   </button>

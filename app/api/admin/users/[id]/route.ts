@@ -9,6 +9,27 @@ const updateSchema = z.object({
   suspended: z.boolean().optional(),
 });
 
+export async function GET(_req: Request, { params }: { params: { id: string } }) {
+  const session = await requireAdminSession();
+  if (!session) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const user = await prisma.user.findUnique({
+    where: { id: params.id },
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      bio: true,
+      plan: true,
+      role: true,
+      suspended: true,
+      createdAt: true,
+    },
+  });
+  if (!user) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  return NextResponse.json(user);
+}
+
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
   const session = await requireAdminSession();
   if (!session) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
