@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { getSettings } from "@/lib/settings";
 
 const registerSchema = z.object({
   username: z
@@ -18,6 +19,14 @@ export async function POST(req: Request) {
   const parsed = registerSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Invalid input" }, { status: 400 });
+  }
+
+  const settings = await getSettings();
+  if (settings.maintenanceMode || !settings.signupsEnabled) {
+    return NextResponse.json(
+      { error: settings.maintenanceMode ? "QuackLink is temporarily down for maintenance." : "Signups are currently closed." },
+      { status: 503 }
+    );
   }
 
   const { username, email, password } = parsed.data;

@@ -4,6 +4,7 @@ import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { canAddLink } from "@/lib/plans";
+import { getSettings } from "@/lib/settings";
 
 const PLATFORMS = [
   "instagram",
@@ -61,9 +62,12 @@ export async function POST(req: Request) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const currentCount = await prisma.link.count({ where: { userId, kind: "LINK" } });
-  if (parsed.data.kind === "LINK" && !canAddLink(user.plan, currentCount)) {
+  const settings = await getSettings();
+  if (parsed.data.kind === "LINK" && !canAddLink(user.plan, currentCount, settings.freePlanLinkLimit)) {
     return NextResponse.json(
-      { error: "Free plan is limited to 5 links. Upgrade to Premium for unlimited links." },
+      {
+        error: `Free plan is limited to ${settings.freePlanLinkLimit} links. Upgrade to Premium for unlimited links.`,
+      },
       { status: 403 }
     );
   }

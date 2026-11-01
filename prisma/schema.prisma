@@ -34,6 +34,7 @@ model User {
   links         Link[]
   theme         Theme?
   subscriptions Subscription[]
+  reports       Report[]
 }
 
 model Link {
@@ -50,6 +51,8 @@ model Link {
   clicks    Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  reports   Report[]
 }
 
 model Theme {
@@ -92,4 +95,30 @@ model Template {
   order           Int      @default(0)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+}
+
+// Single-row table (fixed id "singleton"). Read/written via lib/settings.ts.
+model PlatformSettings {
+  id                String   @id @default("singleton")
+  freePlanLinkLimit Int      @default(5)
+  premiumPriceINR   Int      @default(199)
+  premiumPriceUSD   Int      @default(3)
+  signupsEnabled    Boolean  @default(true)
+  maintenanceMode   Boolean  @default(false)
+  updatedAt         DateTime @updatedAt
+}
+
+// ReportType: "LINK" | "PROFILE"
+// ReportStatus: "OPEN" | "RESOLVED" | "DISMISSED"
+model Report {
+  id        String   @id @default(cuid())
+  type      String
+  userId    String // the reported profile's owner
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  linkId    String? // set when type = "LINK"
+  link      Link?    @relation(fields: [linkId], references: [id], onDelete: Cascade)
+  reason    String?
+  status    String   @default("OPEN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

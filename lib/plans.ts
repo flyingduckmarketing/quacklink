@@ -21,8 +21,9 @@ export function limitsFor(plan: string) {
   return PLAN_LIMITS[plan === "PREMIUM" ? "PREMIUM" : "FREE"];
 }
 
-export function canAddLink(plan: string, currentLinkCount: number) {
-  return currentLinkCount < limitsFor(plan).maxLinks;
+export function canAddLink(plan: string, currentLinkCount: number, freeLinkLimitOverride?: number) {
+  const limit = plan === "PREMIUM" ? Infinity : freeLinkLimitOverride ?? limitsFor(plan).maxLinks;
+  return currentLinkCount < limit;
 }
 
 export const PRICING = {
