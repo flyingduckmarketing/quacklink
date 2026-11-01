@@ -18,14 +18,23 @@ export default async function AdminLayout({
         </Link>
         <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-slate-400">Admin</p>
         <nav className="mt-6 flex flex-col gap-1 text-sm">
+          <Link href="/admin" className="rounded-lg px-3 py-2 hover:bg-slate-100">
+            Overview
+          </Link>
           <Link href="/admin/users" className="rounded-lg px-3 py-2 hover:bg-slate-100">
             Users
+          </Link>
+          <Link href="/admin/reports" className="rounded-lg px-3 py-2 hover:bg-slate-100">
+            Reports
           </Link>
           <Link href="/admin/subscriptions" className="rounded-lg px-3 py-2 hover:bg-slate-100">
             Subscriptions
           </Link>
           <Link href="/admin/templates" className="rounded-lg px-3 py-2 hover:bg-slate-100">
             Templates
+          </Link>
+          <Link href="/admin/settings" className="rounded-lg px-3 py-2 hover:bg-slate-100">
+            Settings
           </Link>
           <Link href="/dashboard" className="mt-4 rounded-lg px-3 py-2 text-slate-500 hover:bg-slate-100">
             ← Back to app
