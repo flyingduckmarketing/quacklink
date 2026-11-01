@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { limitsFor } from "@/lib/plans";
 import ProfileLinkButton from "@/components/ProfileLinkButton";
 import SocialIconLink from "@/components/SocialIconLink";
+import ReportProfileButton from "@/components/ReportProfileButton";
 
 export default async function ProfilePage({
   params,
@@ -17,7 +18,7 @@ export default async function ProfilePage({
     },
   });
 
-  if (!user) notFound();
+  if (!user || user.suspended) notFound();
 
   const limits = limitsFor(user.plan);
   const theme = user.theme;
@@ -99,6 +100,8 @@ export default async function ProfilePage({
             🦆 Made with QuackLink
           </a>
         )}
+
+        <ReportProfileButton username={user.username} />
       </div>
     </main>
   );
